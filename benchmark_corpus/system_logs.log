@@ -1,0 +1,3 @@
+[03/09/2026 15:07] workstation-auth ERROR 0x80070005: access denied while the deployment agent attempted to open the protected credential store.
+[03/09/2026 15:12] workstation-auth INFO: permissions were corrected and the deployment agent completed successfully.
+[05/09/2026 09:31] vector-worker WARN: embedding queue exceeded 500 items; batch size was reduced to recover latency.
