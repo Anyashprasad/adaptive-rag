@@ -1,0 +1,1 @@
+Dense vector search represents chunks and queries as embeddings and retrieves nearby vectors by similarity. It is useful for paraphrases and conceptual similarity, but exact codes, unusual identifiers and timestamps can be underrepresented.
