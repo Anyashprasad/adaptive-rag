@@ -1,0 +1,14 @@
+[
+  {"query":"What did the faculty announce on 4 September 2026 at 11:42 am?","gold_source":"project_notices.md","expected_route":"exact_temporal","category":"exact"},
+  {"query":"Find error code 0x80070005 from 3 September 2026 at 15:07","gold_source":"system_logs.log","expected_route":"exact_temporal","category":"exact"},
+  {"query":"What bulletin mentioned CVE-2026-1234 on 2 September 2026?","gold_source":"security_bulletin.md","expected_route":"exact_temporal","category":"exact"},
+  {"query":"What happened between 3 September 2026 and 5 September 2026 to the deployment agent?","gold_source":"system_logs.log","expected_route":"exact_temporal","category":"exact"},
+  {"query":"Why must each student's implementation be different?","gold_source":"project_notices.md","expected_route":"conceptual","category":"conceptual"},
+  {"query":"Why does AdaptiveRAG change which retriever runs first?","gold_source":"adaptive_architecture.md","expected_route":"conceptual","category":"conceptual"},
+  {"query":"What is the purpose of confidence fallback in the retrieval design?","gold_source":"adaptive_architecture.md","expected_route":"conceptual","category":"conceptual"},
+  {"query":"How does grounded generation reduce prompt injection risk?","gold_source":"rag_policy.md","expected_route":"conceptual","category":"conceptual"},
+  {"query":"Explain why exact identifiers can be difficult for vector retrieval","gold_source":"vector_notes.md","expected_route":"conceptual","category":"conceptual"},
+  {"query":"Explain the 3 September 2026 deployment failure and what fixed it","gold_source":"system_logs.log","expected_route":"mixed","category":"mixed"},
+  {"query":"Why was CVE-2026-1234 on 2 September 2026 important?","gold_source":"security_bulletin.md","expected_route":"mixed","category":"mixed"},
+  {"query":"Explain the 4 September 2026 project rule and its deadline","gold_source":"project_notices.md","expected_route":"mixed","category":"mixed"}
+]
