@@ -1,0 +1,252 @@
+{
+  "backend": "lsa",
+  "calibration": "calibration_lsa.json",
+  "k": 3,
+  "cases": 12,
+  "router_accuracy": 1.0,
+  "fallback_rate": 0.4166666666666667,
+  "systems": {
+    "lexical_only": {
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "ndcg@3": 1.0,
+      "mean_latency_ms": 0.16503483326838855,
+      "p50_latency_ms": 0.13001099978282582
+    },
+    "semantic_only": {
+      "recall@3": 1.0,
+      "mrr": 0.8055555555555556,
+      "ndcg@3": 0.8551549589285763,
+      "mean_latency_ms": 0.12123383332133623,
+      "p50_latency_ms": 0.06679149964838871
+    },
+    "static_hybrid": {
+      "recall@3": 1.0,
+      "mrr": 0.9583333333333334,
+      "ndcg@3": 0.9692441461309548,
+      "mean_latency_ms": 0.2405341667781613,
+      "p50_latency_ms": 0.1972974996533594
+    },
+    "adaptive_rag": {
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "ndcg@3": 1.0,
+      "mean_latency_ms": 0.32670266682544025,
+      "p50_latency_ms": 0.3325574998598313
+    }
+  },
+  "by_category": {
+    "conceptual": {
+      "lexical_only": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "semantic_only": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "static_hybrid": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "adaptive_rag": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      }
+    },
+    "exact": {
+      "lexical_only": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "semantic_only": {
+        "recall@3": 1.0,
+        "mrr": 0.7083333333333334,
+        "ndcg@3": 0.7827324383928644
+      },
+      "static_hybrid": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "adaptive_rag": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      }
+    },
+    "mixed": {
+      "lexical_only": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      },
+      "semantic_only": {
+        "recall@3": 1.0,
+        "mrr": 0.6111111111111112,
+        "ndcg@3": 0.7103099178571525
+      },
+      "static_hybrid": {
+        "recall@3": 1.0,
+        "mrr": 0.8333333333333334,
+        "ndcg@3": 0.8769765845238192
+      },
+      "adaptive_rag": {
+        "recall@3": 1.0,
+        "mrr": 1.0,
+        "ndcg@3": 1.0
+      }
+    }
+  },
+  "case_details": [
+    {
+      "query": "What did the faculty announce on 4 September 2026 at 11:42 am?",
+      "category": "exact",
+      "expected_route": "exact_temporal",
+      "got_route": "exact_temporal",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 2,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Find error code 0x80070005 from 3 September 2026 at 15:07",
+      "category": "exact",
+      "expected_route": "exact_temporal",
+      "got_route": "exact_temporal",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "What bulletin mentioned CVE-2026-1234 on 2 September 2026?",
+      "category": "exact",
+      "expected_route": "exact_temporal",
+      "got_route": "exact_temporal",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 3,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "What happened between 3 September 2026 and 5 September 2026 to the deployment agent?",
+      "category": "exact",
+      "expected_route": "exact_temporal",
+      "got_route": "exact_temporal",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Why must each student's implementation be different?",
+      "category": "conceptual",
+      "expected_route": "conceptual",
+      "got_route": "conceptual",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Why does AdaptiveRAG change which retriever runs first?",
+      "category": "conceptual",
+      "expected_route": "conceptual",
+      "got_route": "conceptual",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "What is the purpose of confidence fallback in the retrieval design?",
+      "category": "conceptual",
+      "expected_route": "conceptual",
+      "got_route": "conceptual",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "How does grounded generation reduce prompt injection risk?",
+      "category": "conceptual",
+      "expected_route": "conceptual",
+      "got_route": "conceptual",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Explain why exact identifiers can be difficult for vector retrieval",
+      "category": "conceptual",
+      "expected_route": "conceptual",
+      "got_route": "conceptual",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Explain the 3 September 2026 deployment failure and what fixed it",
+      "category": "mixed",
+      "expected_route": "mixed",
+      "got_route": "mixed",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 2,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Why was CVE-2026-1234 on 2 September 2026 important?",
+      "category": "mixed",
+      "expected_route": "mixed",
+      "got_route": "mixed",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 3,
+        "static_hybrid": 2,
+        "adaptive_rag": 1
+      }
+    },
+    {
+      "query": "Explain the 4 September 2026 project rule and its deadline",
+      "category": "mixed",
+      "expected_route": "mixed",
+      "got_route": "mixed",
+      "ranks": {
+        "lexical_only": 1,
+        "semantic_only": 1,
+        "static_hybrid": 1,
+        "adaptive_rag": 1
+      }
+    }
+  ]
+}
