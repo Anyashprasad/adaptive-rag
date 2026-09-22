@@ -1,0 +1,12 @@
+[
+  {"query":"4 September 2026 11:42 faculty project name","gold_source":"project_notices.md"},
+  {"query":"0x80070005 3 September 2026 15:07","gold_source":"system_logs.log"},
+  {"query":"CVE-2026-1234","gold_source":"security_bulletin.md"},
+  {"query":"why use semantic retrieval for paraphrases","gold_source":"vector_notes.md"},
+  {"query":"why lexical retrieval helps rare literal strings","gold_source":"lexical_notes.md"},
+  {"query":"nonexistent error code 0xDEADBEEF","gold_source":null},
+  {"query":"meeting on 1 January 2030 at 03:14","gold_source":null},
+  {"query":"explain quantum teleportation policy","gold_source":null},
+  {"query":"CVE-2099-99999 archive parser","gold_source":null},
+  {"query":"why must generated answers cite retrieved evidence","gold_source":"rag_policy.md"}
+]
