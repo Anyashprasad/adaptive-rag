@@ -5,77 +5,348 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AdaptiveRAG</title>
   <style>
-    :root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color-scheme: dark; }
-    body { margin:0; background:#0b0d10; color:#eef2f7; }
-    main { max-width:1050px; margin:0 auto; padding:34px 20px 60px; }
-    h1 { font-size:38px; margin:0; } .sub { color:#98a2b3; margin:8px 0 26px; }
-    .panel { background:#13171d; border:1px solid #252b35; border-radius:16px; padding:18px; margin:14px 0; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; }
-    input, select { background:#0e1116; color:#fff; border:1px solid #303744; border-radius:10px; padding:12px; }
-    input { flex:1; min-width:250px; } button { border:0; border-radius:10px; padding:12px 16px; font-weight:700; cursor:pointer; }
-    button.primary { background:#fff; color:#111; } button.secondary { background:#222833; color:#fff; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:12px; }
-    .metric { background:#0f1318; padding:12px; border-radius:10px; } .metric b { display:block; font-size:12px; color:#98a2b3; margin-bottom:6px; }
-    .hit { border-top:1px solid #252b35; padding:15px 0; } .hit:first-child { border-top:0; }
-    .pill { display:inline-block; padding:4px 8px; border-radius:999px; background:#242b36; margin:2px 4px 2px 0; font-size:12px; }
-    pre { white-space:pre-wrap; word-break:break-word; color:#cbd5e1; }
-    .muted { color:#98a2b3; } .error { color:#ff9f9f; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0e13;
+      --surface:  #13161d;
+      --border:   #1e2330;
+      --accent:   #6366f1;
+      --accent2:  #818cf8;
+      --text:     #e8ecf4;
+      --muted:    #64748b;
+      --success:  #22c55e;
+      --error:    #f87171;
+      --card:     #161a24;
+      --radius:   14px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px 80px;
+    }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 48px; }
+    header h1 {
+      font-size: clamp(28px, 5vw, 46px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header p { color: var(--muted); margin-top: 10px; font-size: 15px; }
+
+    /* ── Main card ── */
+    .card {
+      width: 100%; max-width: 720px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── Drop zone ── */
+    #dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    #dropzone:hover, #dropzone.drag-over {
+      border-color: var(--accent);
+      background: rgba(99,102,241,.06);
+    }
+    #dropzone svg { opacity: .45; margin-bottom: 14px; }
+    #dropzone .dz-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    #dropzone .dz-sub { color: var(--muted); font-size: 13px; }
+    #dropzone .dz-types { color: var(--muted); font-size: 12px; margin-top: 10px; }
+    #fileInput { display: none; }
+
+    /* ── Status bar ── */
+    #statusBar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+    #statusBar .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--success); flex-shrink: 0;
+    }
+    #statusBar.loading .dot { background: var(--accent2); animation: pulse 1s infinite; }
+    #statusBar.error .dot { background: var(--error); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── Query section ── */
+    #querySection { display: none; }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+    #queryInput {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #queryInput:focus { border-color: var(--accent); }
+    #queryInput::placeholder { color: var(--muted); }
+
+    #askBtn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      white-space: nowrap;
+    }
+    #askBtn:hover { opacity: .88; }
+    #askBtn:active { transform: scale(.97); }
+    #askBtn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── Results ── */
+    #resultsSection { display: none; width: 100%; max-width: 720px; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .results-header h2 { font-size: 16px; font-weight: 700; }
+    .badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      background: rgba(99,102,241,.18); color: var(--accent2);
+      letter-spacing: .5px;
+    }
+
+    .hit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+    }
+    .hit-meta {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--muted);
+      margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .hit-meta .tag {
+      background: rgba(255,255,255,.06);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+    .hit-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #c8d0e0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .error-msg {
+      color: var(--error);
+      font-size: 14px;
+      padding: 12px 16px;
+      background: rgba(248,113,113,.08);
+      border-radius: 10px;
+      border: 1px solid rgba(248,113,113,.2);
+    }
   </style>
 </head>
 <body>
-<main>
+
+<header>
   <h1>AdaptiveRAG</h1>
-  <div class="sub">Query-aware hybrid retrieval • temporal/exact routing • confidence fallback • explainable fusion</div>
+  <p>Upload a document — ask anything about it.</p>
+</header>
 
-  <div class="panel">
-    <h3>1. Build index</h3>
-    <div class="row">
-      <input id="path" value="sample_data" placeholder="Corpus path" />
-      <select id="backend"><option value="lsa">LSA (offline)</option><option value="hashing">Hashing (smoke)</option><option value="sentence-transformer">SentenceTransformer</option></select>
-      <select id="generation"><option value="extractive">Extractive generator</option><option value="ollama">Ollama generator</option></select>
-      <input id="calibration" placeholder="Calibration JSON (optional)" />
-      <button class="secondary" onclick="buildIndex()">Build</button>
-    </div>
-    <div id="buildStatus" class="muted" style="margin-top:10px"></div>
+<!-- Step 1: Upload -->
+<div class="card">
+  <div class="step-label">Step 1 — Upload your document</div>
+  <div id="dropzone" onclick="document.getElementById('fileInput').click()">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 3v12m0-12L8 7m4-4l4 4"/>
+    </svg>
+    <div class="dz-title">Drop your file here</div>
+    <div class="dz-sub">or click to browse</div>
+    <div class="dz-types">PDF · TXT · Markdown · CSV · JSON · HTML · YAML</div>
   </div>
+  <input type="file" id="fileInput"
+    accept=".pdf,.txt,.md,.csv,.json,.log,.html,.yaml,.yml,.py" />
 
-  <div class="panel">
-    <h3>2. Ask</h3>
-    <div class="row">
-      <input id="query" value="What happened on 4 September 2026 at 11:42 am?" />
-      <button class="primary" onclick="ask()">Retrieve</button>
-    </div>
+  <div id="statusBar">
+    <div class="dot"></div>
+    <span id="statusText"></span>
   </div>
+</div>
 
-  <div id="trace" class="panel" style="display:none"></div>
-  <div id="results" class="panel" style="display:none"></div>
-</main>
+<!-- Step 2: Ask -->
+<div class="card" id="querySection">
+  <div class="step-label">Step 2 — Ask a question</div>
+  <div class="input-row">
+    <input id="queryInput" type="text"
+      placeholder="e.g. What is on page 42? / Summarize the main idea / When did X happen?" />
+    <button id="askBtn" onclick="ask()">Search</button>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="resultsSection"></div>
+
 <script>
-async function buildIndex(){
-  const s=document.getElementById('buildStatus'); s.textContent='Building…';
-  try{
-    const r=await fetch('/build',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({path:document.getElementById('path').value,semantic_backend:document.getElementById('backend').value,generation_backend:document.getElementById('generation').value,calibration_path:document.getElementById('calibration').value||null})});
-    const j=await r.json(); if(!r.ok) throw new Error(j.detail||'Build failed');
-    s.textContent=`Indexed ${j.chunks} chunks with ${j.semantic_backend||j.backend} / ${j.generation_backend||'extractive'}.`;
-  }catch(e){s.innerHTML=`<span class="error">${e.message}</span>`}
-}
-async function ask(){
-  const tr=document.getElementById('trace'), res=document.getElementById('results');
-  tr.style.display='block'; res.style.display='block'; tr.innerHTML='Retrieving…'; res.innerHTML='';
-  try{
-    const r=await fetch('/query',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query:document.getElementById('query').value,k:6,generate:true})});
-    const j=await r.json(); if(!r.ok) throw new Error(j.detail||'Query failed');
-    const t=j.trace;
-    tr.innerHTML=`<h3>Retrieval decision</h3><div class="grid">
-      <div class="metric"><b>ROUTE</b>${t.route}</div><div class="metric"><b>FIRST STAGE</b>${t.first_stage}</div>
-      <div class="metric"><b>CONFIDENCE</b>${t.confidence}</div><div class="metric"><b>THRESHOLD</b>${t.threshold}</div>
-      <div class="metric"><b>FALLBACK</b>${t.fallback_triggered}</div><div class="metric"><b>BASE LEX / SEM</b>${t.base_lexical_weight} / ${t.base_semantic_weight}</div>
-      <div class="metric"><b>USED LEX / SEM</b>${t.lexical_weight} / ${t.semantic_weight}</div>
-    </div><p>${t.reasons.map(x=>`<span class="pill">${escapeHtml(x)}</span>`).join('')}</p>`;
-    res.innerHTML=`<h3>Evidence</h3><pre>${escapeHtml(j.answer||'')}</pre>` + j.hits.map((h,i)=>`<div class="hit"><b>#${i+1} ${escapeHtml(h.source)}</b> <span class="pill">${h.channel}</span> <span class="pill">score ${h.score}</span><p>${escapeHtml(h.text)}</p></div>`).join('');
-  }catch(e){tr.innerHTML=`<span class="error">${e.message}</span>`}
-}
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+  const dropzone   = document.getElementById('dropzone');
+  const fileInput  = document.getElementById('fileInput');
+  const statusBar  = document.getElementById('statusBar');
+  const statusText = document.getElementById('statusText');
+  const querySection  = document.getElementById('querySection');
+  const resultsSection = document.getElementById('resultsSection');
+
+  // ── Drag & drop ──────────────────────────────────────────
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault(); dropzone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+  // ── Upload ───────────────────────────────────────────────
+  async function handleFile(file) {
+    setStatus('loading', `Uploading ${file.name}…`);
+    querySection.style.display = 'none';
+    resultsSection.style.display = 'none';
+    resultsSection.innerHTML = '';
+
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/upload', { method: 'POST', body: form });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.detail || 'Upload failed');
+      setStatus('ok', `✓ "${j.filename}" indexed — ${j.chunks} chunks ready`);
+      querySection.style.display = 'block';
+      document.getElementById('queryInput').focus();
+    } catch (e) {
+      setStatus('error', e.message);
+    }
+  }
+
+  function setStatus(type, msg) {
+    statusBar.style.display = 'flex';
+    statusBar.className = type === 'loading' ? 'loading' : type === 'error' ? 'error' : '';
+    statusText.textContent = msg;
+  }
+
+  // ── Query ────────────────────────────────────────────────
+  document.getElementById('queryInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') ask();
+  });
+
+  async function ask() {
+    const q = document.getElementById('queryInput').value.trim();
+    if (!q) return;
+    const btn = document.getElementById('askBtn');
+    btn.disabled = true; btn.textContent = 'Searching…';
+    resultsSection.style.display = 'block';
+    resultsSection.innerHTML = '';
+
+    try {
+      const res = await fetch('/query', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query: q, k: 6 })
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.detail || 'Query failed');
+      renderResults(j);
+    } catch (e) {
+      resultsSection.innerHTML = `<div class="error-msg">${esc(e.message)}</div>`;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Search';
+    }
+  }
+
+  function renderResults(data) {
+    const hits = data.hits || [];
+    const routeLabel = { exact_temporal: 'Exact match', conceptual: 'Semantic', mixed: 'Mixed' }[data.route] || data.route;
+
+    if (!hits.length) {
+      resultsSection.innerHTML = `<div class="no-results">No matching content found in the document.</div>`;
+      return;
+    }
+
+    const cards = hits.map((h, i) => {
+      const page = h.page ? `<span class="tag">Page ${h.page}</span>` : '';
+      const score = `<span class="tag">Score ${(h.score * 100).toFixed(0)}%</span>`;
+      return `
+        <div class="hit-card">
+          <div class="hit-meta">
+            <span class="tag">#${i + 1}</span>
+            <span class="tag">${esc(h.source)}</span>
+            ${page}
+            ${score}
+          </div>
+          <div class="hit-text">${esc(h.text.trim())}</div>
+        </div>`;
+    }).join('');
+
+    resultsSection.innerHTML = `
+      <div class="results-header">
+        <h2>Results</h2>
+        <span class="badge">${routeLabel} · ${hits.length} match${hits.length !== 1 ? 'es' : ''}</span>
+      </div>
+      ${cards}`;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
 </script>
 </body>
 </html>
