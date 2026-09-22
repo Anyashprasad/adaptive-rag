@@ -1,0 +1,1 @@
+A mock workshop registration closes on 18 September 2026 at 11:42 am. Workshop participants may edit their display names after registration. This document is unrelated to the student project submission.
