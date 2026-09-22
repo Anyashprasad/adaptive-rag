@@ -1,0 +1,3 @@
+AdaptiveRAG uses a query-aware retrieval controller. Exact and temporal questions prioritize lexical retrieval because dates, timestamps, IDs, error codes, filenames and quoted strings are brittle under dense embeddings. Conceptual questions prioritize semantic retrieval. Mixed questions run both channels.
+
+If the first retriever has weak confidence, AdaptiveRAG activates the opposite retriever and fuses evidence. Query-dependent weights favor lexical evidence for literal-heavy questions and semantic evidence for conceptual questions. The retrieval trace explains the route, confidence, threshold, fallback decision, fusion weights and evidence sources.
