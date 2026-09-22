@@ -1,0 +1,1 @@
+Lexical retrieval uses token overlap and BM25-style term weighting. Exact phrases and metadata constraints can be boosted. It is strong for rare literal strings but weak when a question uses different vocabulary from the relevant document.
