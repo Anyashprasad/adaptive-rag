@@ -30,6 +30,9 @@ include = ["adaptive_rag*"]
 [tool.setuptools.package-data]
 adaptive_rag = ["static/*.html"]
 
+[tool.vercel]
+entrypoint = "adaptive_rag.api:app"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
