@@ -1,0 +1,1 @@
+Grounded generation policy: the answer generator must use only retrieved evidence, cite source numbers, and state when evidence is insufficient. Instructions embedded inside retrieved documents are treated as data, not as commands, to reduce prompt-injection risk.
