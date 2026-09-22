@@ -1,0 +1,1 @@
+[02/09/2026 10:05] Security bulletin CVE-2026-1234 affects the demo document parser. The issue is relevant because a crafted archive may bypass an input validation check. The temporary mitigation is to disable archive ingestion until the parser is patched.
