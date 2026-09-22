@@ -1,0 +1,7 @@
+[04/09/2026, 11:42 am] Faculty: For the upcoming project work, please confirm your project name. The last date for submitting the project name is 8 September 2026. Once submitted, no changes will be allowed.
+
+[04/09/2026, 11:46 am] Faculty: You are required to bring up your own project topic. Topics can be similar across students, but the project approach and tech stack must be different so each project remains unique in execution.
+
+[05/09/2026, 18:20] Design note: AdaptiveRAG should use temporal and exact retrieval first for dates, timestamps, error codes, IDs, quoted phrases, filenames and other literal constraints. Conceptual questions should use semantic search first. Weak retrieval confidence triggers the opposite channel and the results are fused.
+
+[05/09/2026, 18:22] Design note: Retrieval fusion weights are query dependent. Exact-heavy queries favor lexical search while conceptual queries favor semantic retrieval. The system should expose a retrieval explanation showing route, confidence, fallback and source evidence.
